@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { StatusBar } from 'expo-status-bar'
 import MapView, { Circle, LatLng } from 'react-native-maps'
 import * as Location from 'expo-location'
 import uuid from 'react-native-uuid'
@@ -58,43 +57,46 @@ export default function Map() {
     console.log('Checking')
   }
 
+  if (granted === false || !location) {
+    return (
+      <Container>
+        <Text>Location permission needed!</Text>
+      </Container>
+    )
+  }
+
   return (
     <Container>
-      <StatusBar style="auto" />
-      {granted === false || !location ? (
-        <Text>Location permission needed!</Text>
-      ) : (
-        <MapView
-          initialRegion={{
-            latitude: location?.coords.latitude,
-            longitude: location?.coords.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-          style={{
-            width: '100%',
-            height: '100%',
-          }}
-          onPress={event =>
-            handleCreateCircleInLocation(event.nativeEvent.coordinate)
-          }
-          showsUserLocation
-          followsUserLocation
-          onUserLocationChange={checkIfLocationIsInsideCircle}
-        >
-          {circles.map(circle => (
-            <Circle
-              key={circle.id}
-              center={circle.latlng}
-              radius={circle.radius}
-              strokeWidth={1}
-              strokeColor={'#1a66ff'}
-              fillColor={'rgba(230,238,255,0.5)'}
-              onPress={() => handleRemoveCircle(circle)}
-            />
-          ))}
-        </MapView>
-      )}
+      <MapView
+        initialRegion={{
+          latitude: location?.coords.latitude,
+          longitude: location?.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+        onPress={event =>
+          handleCreateCircleInLocation(event.nativeEvent.coordinate)
+        }
+        showsUserLocation
+        followsUserLocation
+        onUserLocationChange={checkIfLocationIsInsideCircle}
+      >
+        {circles.map(circle => (
+          <Circle
+            key={circle.id}
+            center={circle.latlng}
+            radius={circle.radius}
+            strokeWidth={1}
+            strokeColor={'#1a66ff'}
+            fillColor={'rgba(230,238,255,0.5)'}
+            onPress={() => handleRemoveCircle(circle)}
+          />
+        ))}
+      </MapView>
     </Container>
   )
 }
