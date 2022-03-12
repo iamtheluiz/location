@@ -24,6 +24,12 @@ steps:
 - script: npm run lint
   displayName: 'Code lint and fix'
 
+- task: CopyFiles@1
+  inputs:
+    SourceFolder: '.'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
