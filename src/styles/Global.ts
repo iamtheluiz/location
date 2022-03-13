@@ -1,10 +1,16 @@
 import styled from 'styled-components/native'
 
-export const Container = styled.View`
+interface ContainerProps {
+  center?: boolean
+}
+export const Container = styled.View<ContainerProps>`
   flex: 1;
   background-color: #fff;
-  align-items: center;
-  justify-content: center;
+  ${props =>
+    props.center &&
+    `align-items: center;
+    justify-content: center;
+    `};
   position: relative;
 `
 export const Header = styled.View`

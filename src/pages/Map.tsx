@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import MapView, { Circle, LatLng } from 'react-native-maps'
 import * as Location from 'expo-location'
 import uuid from 'react-native-uuid'
-import { Alert, Text } from 'react-native'
+import { Text } from 'react-native'
 
 import { Feather } from '@expo/vector-icons'
 import { Container, FloatButton, OverView } from '../styles/Global'
@@ -55,7 +55,7 @@ export default function Map() {
 
   if (granted === false || !location) {
     return (
-      <Container>
+      <Container center={false}>
         <Text>Location permission needed!</Text>
       </Container>
     )
@@ -99,7 +99,7 @@ export default function Map() {
         </FloatButton>
         <FloatButton
           style={{ backgroundColor: '#f22d0a' }}
-          onPress={() => Alert.alert('Em construção')}
+          onPress={() => navigation.navigate('CreatePoint' as never)}
         >
           <Feather name="plus" size={28} color="white" />
         </FloatButton>
