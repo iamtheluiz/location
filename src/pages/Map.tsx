@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import MapView, { Circle, LatLng } from 'react-native-maps'
 import * as Location from 'expo-location'
 import uuid from 'react-native-uuid'
-import { Text } from 'react-native'
+import { Alert, Text } from 'react-native'
 
 import { Feather } from '@expo/vector-icons'
 import { Container, FloatButton, OverView } from '../styles/Global'
@@ -94,13 +94,14 @@ export default function Map() {
         ))}
       </MapView>
       <OverView>
-        <FloatButton>
-          <Feather
-            name="plus"
-            size={36}
-            color="white"
-            onPress={() => navigation.navigate('Points' as never)}
-          />
+        <FloatButton onPress={() => navigation.navigate('Points' as never)}>
+          <Feather name="list" size={28} color="white" />
+        </FloatButton>
+        <FloatButton
+          style={{ backgroundColor: '#f22d0a' }}
+          onPress={() => Alert.alert('Em construção')}
+        >
+          <Feather name="plus" size={28} color="white" />
         </FloatButton>
       </OverView>
     </Container>
