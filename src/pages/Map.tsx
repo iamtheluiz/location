@@ -4,19 +4,17 @@ import * as Location from 'expo-location'
 import uuid from 'react-native-uuid'
 import { Text } from 'react-native'
 
-import { Container } from '../styles/Global'
-
-type NotificationArea = {
-  id: string
-  name: string
-  radius: number
-  latlng: LatLng
-}
+import { Feather } from '@expo/vector-icons'
+import { Container, FloatButton, OverView } from '../styles/Global'
+import { NotificationArea, useCircles } from '../contexts/circles'
+import { useNavigation } from '@react-navigation/core'
 
 export default function Map() {
   const [granted, setGranted] = useState(false)
   const [location, setLocation] = useState<Location.LocationObject>()
-  const [circles, setCircles] = useState<NotificationArea[]>([])
+
+  const { circles, setCircles } = useCircles()
+  const navigation = useNavigation()
 
   useEffect(() => {
     // Request location permission
@@ -53,9 +51,7 @@ export default function Map() {
     setCircles(circles.filter(item => item.id === circle.id))
   }
 
-  function checkIfLocationIsInsideCircle() {
-    console.log('Checking')
-  }
+  function checkIfLocationIsInsideCircle() {}
 
   if (granted === false || !location) {
     return (
@@ -97,6 +93,16 @@ export default function Map() {
           />
         ))}
       </MapView>
+      <OverView>
+        <FloatButton>
+          <Feather
+            name="plus"
+            size={36}
+            color="white"
+            onPress={() => navigation.navigate('Points' as never)}
+          />
+        </FloatButton>
+      </OverView>
     </Container>
   )
 }
