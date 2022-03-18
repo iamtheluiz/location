@@ -1,3 +1,4 @@
+import uuid from 'react-native-uuid'
 import { createContext, FC, useContext, useState } from 'react'
 import { LatLng } from 'react-native-maps'
 
@@ -11,6 +12,7 @@ export type NotificationArea = {
 interface CirclesContextProps {
   circles: NotificationArea[]
   setCircles: (circles: NotificationArea[]) => void
+  addNewCircle: (circleData: Omit<NotificationArea, 'id'>) => void
 }
 
 const CirclesContext = createContext({} as CirclesContextProps)
@@ -28,11 +30,21 @@ export const CirclesProvider: FC = ({ children }) => {
     },
   ])
 
+  function addNewCircle(circleData: Omit<NotificationArea, 'id'>) {
+    const circle = {
+      id: String(uuid.v4()),
+      ...circleData,
+    }
+
+    setCircles([...circles, circle])
+  }
+
   return (
     <CirclesContext.Provider
       value={{
         circles,
         setCircles,
+        addNewCircle,
       }}
     >
       {children}

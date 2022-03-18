@@ -45,3 +45,34 @@ export const OverView = styled.View`
   height: 100%;
   padding: 16px;
 `
+
+export const Input = styled.TextInput`
+  border: 2px solid #ccc;
+  height: 56px;
+  padding: 0px 16px;
+  border-radius: 16px;
+  font-size: 18px;
+  margin-top: 8px;
+`
+export const InputGroup = styled.View`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+`
+export const Button = styled.TouchableOpacity`
+  justify-content: center;
+  align-items: center;
+
+  background-color: royalblue;
+  border: 2px solid #ccc;
+  height: 56px;
+  padding: 0px 16px;
+  border-radius: 16px;
+  font-size: 18px;
+  margin-top: 8px;
+`
+export const ButtonText = styled.Text`
+  font-size: 18px;
+  font-weight: bold;
+  color: white;
+`
