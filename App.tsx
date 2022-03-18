@@ -7,6 +7,7 @@ import { CirclesProvider } from './src/contexts/circles'
 
 import Map from './src/pages/Map'
 import Points from './src/pages/Points'
+import CreatePoint from './src/pages/CreatePoint'
 
 const Stack = createNativeStackNavigator()
 
@@ -23,6 +24,7 @@ function App() {
           >
             <Stack.Screen name="Map" component={Map} />
             <Stack.Screen name="Points" component={Points} />
+            <Stack.Screen name="CreatePoint" component={CreatePoint} />
           </Stack.Navigator>
         </NavigationContainer>
       </CirclesProvider>

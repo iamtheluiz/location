@@ -55,7 +55,7 @@ export default function Map() {
 
   if (granted === false || !location) {
     return (
-      <Container>
+      <Container center={false}>
         <Text>Location permission needed!</Text>
       </Container>
     )
@@ -94,13 +94,14 @@ export default function Map() {
         ))}
       </MapView>
       <OverView>
-        <FloatButton>
-          <Feather
-            name="plus"
-            size={36}
-            color="white"
-            onPress={() => navigation.navigate('Points' as never)}
-          />
+        <FloatButton onPress={() => navigation.navigate('Points' as never)}>
+          <Feather name="list" size={28} color="white" />
+        </FloatButton>
+        <FloatButton
+          style={{ backgroundColor: '#f22d0a' }}
+          onPress={() => navigation.navigate('CreatePoint' as never)}
+        >
+          <Feather name="plus" size={28} color="white" />
         </FloatButton>
       </OverView>
     </Container>

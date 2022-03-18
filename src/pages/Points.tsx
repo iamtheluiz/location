@@ -1,10 +1,15 @@
-import { ScrollView } from 'react-native'
+import { ScrollView, TouchableOpacity } from 'react-native'
 import CirclesItem from '../components/CirclesItem'
 import { useCircles } from '../contexts/circles'
-import { Container } from '../styles/Global'
+import { Container, Header, Title } from '../styles/Global'
+
+import { Feather } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
 
 export default function Points() {
   const { circles } = useCircles()
+
+  const navigation = useNavigation()
 
   return (
     <Container>
@@ -17,6 +22,12 @@ export default function Points() {
           marginTop: 20,
         }}
       >
+        <Header>
+          <TouchableOpacity onPress={() => navigation.navigate('Map' as never)}>
+            <Feather name="arrow-left" size={28} color="black" />
+          </TouchableOpacity>
+          <Title>Points</Title>
+        </Header>
         {circles.map(circle => (
           <CirclesItem key={circle.id} circle={circle} />
         ))}
