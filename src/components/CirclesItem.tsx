@@ -1,6 +1,8 @@
 import styled from 'styled-components/native'
 import MapView, { Circle } from 'react-native-maps'
-import { NotificationArea } from '../contexts/circles'
+import { NotificationArea, useCircles } from '../contexts/circles'
+import { getDistanceFromLatLonInKm } from '../utils/getDistanceFromLatLonInKm'
+import { useEffect, useState } from 'react'
 
 const CirclesItemContainer = styled.View`
   flex-direction: column;
@@ -44,6 +46,31 @@ const CirclesItemDistance = styled.Text`
 `
 
 export default function CirclesItem({ circle }: { circle: NotificationArea }) {
+  const { currentLocation } = useCircles()
+  const [distanceText, setDistanceText] = useState('0km')
+
+  useEffect(() => {
+    let distanceValue = getDistanceFromLatLonInKm(
+      circle.latlng.latitude,
+      circle.latlng.longitude,
+      currentLocation.latitude,
+      currentLocation.longitude
+    )
+    let unit = ''
+
+    if (distanceValue < 1) {
+      // Convert to meters
+      distanceValue = distanceValue * 1000
+      distanceValue = Math.ceil(distanceValue * 100) / 100
+      unit = 'm'
+    } else {
+      distanceValue = Math.ceil(distanceValue * 100) / 100
+      unit = 'km'
+    }
+
+    setDistanceText(`${distanceValue}${unit}`)
+  }, [currentLocation])
+
   return (
     <CirclesItemContainer>
       <CirclesItemMap>
@@ -73,13 +100,14 @@ export default function CirclesItem({ circle }: { circle: NotificationArea }) {
         <CirclesItemDetails>
           <CirclesItemName>{circle.name}</CirclesItemName>
           <CirclesItemPosition>
-            {circle.latlng.latitude}, {circle.latlng.longitude}
+            {Math.ceil(circle.latlng.latitude * 10000) / 10000},
+            {Math.ceil(circle.latlng.longitude * 10000) / 10000}
           </CirclesItemPosition>
           <CirclesItemRadius>{circle.radius} metros de raio</CirclesItemRadius>
         </CirclesItemDetails>
         <CirclesItemDistanceContainer>
           <CirclesItemDistanceLabel>Distância</CirclesItemDistanceLabel>
-          <CirclesItemDistance>1km</CirclesItemDistance>
+          <CirclesItemDistance>{distanceText}</CirclesItemDistance>
         </CirclesItemDistanceContainer>
       </CirclesItemInfo>
     </CirclesItemContainer>

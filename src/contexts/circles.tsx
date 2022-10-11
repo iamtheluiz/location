@@ -19,6 +19,10 @@ interface CirclesContextProps {
   circles: NotificationArea[]
   setCircles: (circles: NotificationArea[]) => void
   addNewCircle: (circleData: Omit<NotificationArea, 'id'>) => void
+  currentLocation: {
+    latitude: number
+    longitude: number
+  }
 }
 
 const CirclesContext = createContext({} as CirclesContextProps)
@@ -41,6 +45,10 @@ async function schedulePushNotification(title: string, body: string) {
 
 export const CirclesProvider: FC = ({ children }) => {
   const [circles, setCircles] = useState<NotificationArea[]>([])
+  const [currentLocation, setCurrentLocation] = useState<{
+    latitude: number
+    longitude: number
+  }>({ latitude: 0, longitude: 0 })
 
   function addNewCircle(circleData: Omit<NotificationArea, 'id'>) {
     const circle = {
@@ -63,6 +71,7 @@ export const CirclesProvider: FC = ({ children }) => {
         coords: { latitude, longitude },
       } = location
 
+      setCurrentLocation({ latitude, longitude })
       checkIfLocationIsInsideACircle(latitude, longitude)
     }
   )
@@ -99,6 +108,11 @@ export const CirclesProvider: FC = ({ children }) => {
       console.log(circle.name)
       console.log(distance)
       console.log(radius)
+      if (circle.lastNotified) {
+        console.log(
+          new Date().getTime() / 1000 - circle.lastNotified.getTime() / 1000
+        )
+      }
 
       if (Math.abs(distance) <= radius) {
         // Dentro da área
@@ -132,6 +146,7 @@ export const CirclesProvider: FC = ({ children }) => {
         circles,
         setCircles,
         addNewCircle,
+        currentLocation,
       }}
     >
       {children}

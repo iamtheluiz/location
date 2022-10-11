@@ -2,19 +2,18 @@ import { useEffect, useState } from 'react'
 import { Feather } from '@expo/vector-icons'
 import * as Location from 'expo-location'
 import { useNavigation } from '@react-navigation/native'
-import { Alert, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, TouchableOpacity, View } from 'react-native'
 import MapView, { Circle, LatLng } from 'react-native-maps'
 
 import {
-  Button,
   ButtonText,
   Container,
   Header,
-  Input,
   InputGroup,
   Title,
 } from '../styles/Global'
 import { useCircles } from '../contexts/circles'
+import { Layout, Text, Input, Button } from '@ui-kitten/components'
 
 export default function CreatePoint() {
   const [userCurrentLocation, setUserCurrentLocation] = useState<LatLng>()
@@ -55,30 +54,39 @@ export default function CreatePoint() {
   }
 
   return (
-    <Container
+    <Layout
       style={{
+        flex: 1,
         padding: 24,
-        paddingTop: 44,
+        paddingTop: 54,
       }}
     >
       <Header>
         <TouchableOpacity onPress={() => navigation.navigate('Map' as never)}>
           <Feather name="arrow-left" size={28} color="black" />
         </TouchableOpacity>
-        <Title>Create</Title>
+        <Text category="h1">Create</Text>
       </Header>
       <Input
-        placeholder="Nome"
+        label="Nome do Ponto"
+        placeholder="Ex: Casa"
         onChangeText={value => {
           setName(value)
         }}
       />
       <Input
-        placeholder="Raio do Circulo"
+        style={{ marginTop: 6 }}
+        label="Raio do Círculo (m)"
+        placeholder="Ex: 200"
         keyboardType="number-pad"
         value={String(radius)}
         onChangeText={value => {
-          setRadius(parseFloat(value))
+          if (value === '') {
+            value = '1'
+          }
+          let valueNumber = parseFloat(value)
+          valueNumber = valueNumber < 1 ? 1 : valueNumber
+          setRadius(valueNumber)
         }}
       />
       {userCurrentLocation && (
@@ -111,7 +119,7 @@ export default function CreatePoint() {
           )}
         </MapView>
       )}
-      <InputGroup>
+      <InputGroup style={{ marginTop: 6 }}>
         {location === undefined ? (
           <></>
         ) : (
@@ -134,9 +142,13 @@ export default function CreatePoint() {
           </>
         )}
       </InputGroup>
-      <Button onPress={handleAddNewCircle}>
-        <ButtonText>Enviar</ButtonText>
+      <Button
+        style={{ marginTop: 6 }}
+        status="primary"
+        onPress={handleAddNewCircle}
+      >
+        ENVIAR
       </Button>
-    </Container>
+    </Layout>
   )
 }
