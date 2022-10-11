@@ -1,4 +1,4 @@
-import { ScrollView, TouchableOpacity } from 'react-native'
+import { ScrollView, Text, TouchableOpacity } from 'react-native'
 import CirclesItem from '../components/CirclesItem'
 import { useCircles } from '../contexts/circles'
 import { Container, Header, Title } from '../styles/Global'
@@ -28,6 +28,7 @@ export default function Points() {
           </TouchableOpacity>
           <Title>Points</Title>
         </Header>
+        {circles.length === 0 && <Text>Não existem pontos cadastros!</Text>}
         {circles.map(circle => (
           <CirclesItem key={circle.id} circle={circle} />
         ))}

@@ -121,6 +121,7 @@ export default function CreatePoint() {
               placeholder="Latitude"
               keyboardType="number-pad"
               value={String(location?.latitude)}
+              editable={false}
             />
             <View style={{ width: 8 }} />
             <Input
@@ -128,6 +129,7 @@ export default function CreatePoint() {
               placeholder="Longitude"
               keyboardType="number-pad"
               value={String(location?.longitude)}
+              editable={false}
             />
           </>
         )}

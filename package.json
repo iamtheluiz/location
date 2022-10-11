@@ -12,18 +12,25 @@
     "format": "prettier --check ./src --write"
   },
   "dependencies": {
+    "@eva-design/eva": "^2.1.1",
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/native-stack": "^6.4.1",
+    "@ui-kitten/components": "^5.1.1",
     "expo": "~44.0.0",
+    "expo-device": "~4.1.0",
     "expo-location": "~14.0.1",
+    "expo-notifications": "~0.14.0",
     "expo-status-bar": "~1.2.0",
+    "expo-task-manager": "~10.1.0",
     "expo-updates": "~0.11.6",
+    "lottie-react-native": "5.0.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-native": "0.64.3",
     "react-native-maps": "0.29.4",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.10.1",
+    "react-native-svg": "12.1.1",
     "react-native-uuid": "^2.0.1",
     "react-native-web": "0.17.1",
     "styled-components": "^5.3.3"
@@ -42,5 +49,13 @@
     "prettier": "^2.5.1",
     "typescript": "~4.3.5"
   },
-  "private": true
+  "private": true,
+  "expo": {
+    "android": {
+      "useNextNotificationsApi": true,
+      "permissions": [
+        "RECEIVE_BOOT_COMPLETED"
+      ]
+    }
+  }
 }
