@@ -3,6 +3,7 @@ import MapView, { Circle } from 'react-native-maps'
 import { NotificationArea, useCircles } from '../contexts/circles'
 import { getDistanceFromLatLonInKm } from '../utils/getDistanceFromLatLonInKm'
 import { useEffect, useState } from 'react'
+import { MapStyle } from '../styles/MapStyle'
 
 const CirclesItemContainer = styled.View`
   flex-direction: column;
@@ -24,6 +25,7 @@ const CirclesItemInfo = styled.View`
   flex-direction: row;
   padding: 6px 12px;
   flex: 1;
+  background-color: white;
 `
 const CirclesItemDetails = styled.View`
   flex: 1;
@@ -85,6 +87,7 @@ export default function CirclesItem({ circle }: { circle: NotificationArea }) {
             width: '100%',
             height: '100%',
           }}
+          customMapStyle={MapStyle}
         >
           <Circle
             key={circle.id}

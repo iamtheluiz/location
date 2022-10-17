@@ -23,19 +23,25 @@ interface CirclesContextProps {
     latitude: number
     longitude: number
   }
+  isGettingCurrentLocation: boolean
+  handleToggleLocation: () => void
 }
 
 const CirclesContext = createContext({} as CirclesContextProps)
 
 const TASK_FETCH_LOCATION = 'TASK_FETCH_LOCATION'
 
-async function schedulePushNotification(title: string, body: string) {
+async function schedulePushNotification(
+  title: string,
+  body: string,
+  data: any = null
+) {
   await Notifications.scheduleNotificationAsync({
     content: {
       // eslint-disable-next-line quotes
       title,
       body,
-      data: { data: 'goes here' },
+      data: { data },
       sound: undefined,
       priority: AndroidNotificationPriority.MAX,
     },
@@ -49,6 +55,8 @@ export const CirclesProvider: FC = ({ children }) => {
     latitude: number
     longitude: number
   }>({ latitude: 0, longitude: 0 })
+  const [isGettingCurrentLocation, setIsGettingCurrentLocation] =
+    useState(false)
 
   function addNewCircle(circleData: Omit<NotificationArea, 'id'>) {
     const circle = {
@@ -75,18 +83,6 @@ export const CirclesProvider: FC = ({ children }) => {
       checkIfLocationIsInsideACircle(latitude, longitude)
     }
   )
-
-  // 2 start the task
-  Location.startLocationUpdatesAsync(TASK_FETCH_LOCATION, {
-    accuracy: Location.Accuracy.Highest,
-    distanceInterval: 1, // minimum change (in meters) betweens updates
-    deferredUpdatesInterval: 1000, // minimum interval (in milliseconds) between updates
-    // foregroundService is how you get the task to be updated as often as would be if the app was open
-    foregroundService: {
-      notificationTitle: 'Utilizando sua localização',
-      notificationBody: 'Para parar, feche o aplicativo!',
-    },
-  })
 
   function checkIfLocationIsInsideACircle(
     currentLatitude: number,
@@ -140,6 +136,26 @@ export const CirclesProvider: FC = ({ children }) => {
     })
   }
 
+  async function handleToggleLocation() {
+    setIsGettingCurrentLocation(!isGettingCurrentLocation)
+
+    if (isGettingCurrentLocation) {
+      // 2 start the task
+      await Location.startLocationUpdatesAsync(TASK_FETCH_LOCATION, {
+        accuracy: Location.Accuracy.Highest,
+        distanceInterval: 1, // minimum change (in meters) betweens updates
+        deferredUpdatesInterval: 1000, // minimum interval (in milliseconds) between updates
+        // foregroundService is how you get the task to be updated as often as would be if the app was open
+        foregroundService: {
+          notificationTitle: 'Utilizando sua localização',
+          notificationBody: 'Para parar, feche o aplicativo!',
+        },
+      })
+    } else {
+      await Location.stopLocationUpdatesAsync(TASK_FETCH_LOCATION)
+    }
+  }
+
   return (
     <CirclesContext.Provider
       value={{
@@ -147,6 +163,8 @@ export const CirclesProvider: FC = ({ children }) => {
         setCircles,
         addNewCircle,
         currentLocation,
+        isGettingCurrentLocation,
+        handleToggleLocation,
       }}
     >
       {children}

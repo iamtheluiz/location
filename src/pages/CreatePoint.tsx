@@ -13,12 +13,15 @@ import {
   Title,
 } from '../styles/Global'
 import { useCircles } from '../contexts/circles'
-import { Layout, Text, Input, Button } from '@ui-kitten/components'
+import { Text, Input, Button } from '@ui-kitten/components'
 
-export default function CreatePoint() {
-  const [userCurrentLocation, setUserCurrentLocation] = useState<LatLng>()
+export default function CreatePoint({ route }: any) {
+  const { params = undefined } = route
 
   const [name, setName] = useState('')
+  const [userCurrentLocation, setUserCurrentLocation] = useState<
+    LatLng | undefined
+  >()
   const [location, setLocation] = useState<LatLng | undefined>()
   const [radius, setRadius] = useState(200)
 
@@ -27,9 +30,22 @@ export default function CreatePoint() {
 
   useEffect(() => {
     async function getCurrentPosition() {
-      const location = await Location.getCurrentPositionAsync()
+      if (params) {
+        const coords = {
+          latitude: params.latitude,
+          longitude: params.longitude,
+        }
+        setLocation(coords)
+        setUserCurrentLocation(coords)
+      } else {
+        try {
+          const location = await Location.getCurrentPositionAsync()
 
-      setUserCurrentLocation(location.coords)
+          setUserCurrentLocation(location.coords)
+        } catch (error) {
+          console.log(error)
+        }
+      }
     }
 
     getCurrentPosition()

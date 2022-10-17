@@ -3,7 +3,7 @@ import MapView, { Circle } from 'react-native-maps'
 import * as Location from 'expo-location'
 import { Text } from 'react-native'
 
-import { Feather } from '@expo/vector-icons'
+import { Feather, MaterialIcons } from '@expo/vector-icons'
 import { Container, FloatButton, OverView } from '../styles/Global'
 import { NotificationArea, useCircles } from '../contexts/circles'
 import { useNavigation } from '@react-navigation/core'
@@ -13,7 +13,12 @@ export default function Map() {
   const [granted, setGranted] = useState(false)
   const [location, setLocation] = useState<Location.LocationObject>()
 
-  const { circles, setCircles } = useCircles()
+  const {
+    circles,
+    setCircles,
+    handleToggleLocation,
+    isGettingCurrentLocation,
+  } = useCircles()
   const navigation = useNavigation()
 
   useEffect(() => {
@@ -48,7 +53,7 @@ export default function Map() {
   }
 
   return (
-    <>
+    <Container>
       <MapView
         initialRegion={{
           latitude: location?.coords.latitude,
@@ -65,6 +70,13 @@ export default function Map() {
         onUserLocationChange={checkIfLocationIsInsideCircle}
         userInterfaceStyle={'dark'}
         customMapStyle={MapStyle}
+        showsMyLocationButton={false}
+        onLongPress={event =>
+          navigation.navigate(
+            'CreatePoint' as never,
+            event.nativeEvent.coordinate as never
+          )
+        }
       >
         {circles.map(circle => (
           <Circle
@@ -79,6 +91,13 @@ export default function Map() {
         ))}
       </MapView>
       <OverView>
+        <FloatButton onPress={handleToggleLocation}>
+          {isGettingCurrentLocation ? (
+            <MaterialIcons name="gps-off" size={28} color="white" />
+          ) : (
+            <MaterialIcons name="gps-fixed" size={28} color="white" />
+          )}
+        </FloatButton>
         <FloatButton onPress={() => navigation.navigate('Points' as never)}>
           <Feather name="list" size={28} color="white" />
         </FloatButton>
@@ -89,6 +108,6 @@ export default function Map() {
           <Feather name="plus" size={28} color="white" />
         </FloatButton>
       </OverView>
-    </>
+    </Container>
   )
 }
