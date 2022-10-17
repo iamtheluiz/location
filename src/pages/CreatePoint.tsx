@@ -54,7 +54,7 @@ export default function CreatePoint() {
   }
 
   return (
-    <Layout
+    <Container
       style={{
         flex: 1,
         padding: 24,
@@ -63,9 +63,11 @@ export default function CreatePoint() {
     >
       <Header>
         <TouchableOpacity onPress={() => navigation.navigate('Map' as never)}>
-          <Feather name="arrow-left" size={28} color="black" />
+          <Feather name="arrow-left" size={28} color="white" />
         </TouchableOpacity>
-        <Text category="h1">Create</Text>
+        <Text category="h1" style={{ color: 'white' }}>
+          Create
+        </Text>
       </Header>
       <Input
         label="Nome do Ponto"
@@ -149,6 +151,6 @@ export default function CreatePoint() {
       >
         ENVIAR
       </Button>
-    </Layout>
+    </Container>
   )
 }

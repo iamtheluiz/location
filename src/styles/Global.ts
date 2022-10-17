@@ -5,7 +5,7 @@ interface ContainerProps {
 }
 export const Container = styled.View<ContainerProps>`
   flex: 1;
-  background-color: #fff;
+  background-color: #242f3e;
   ${props =>
     props.center &&
     `align-items: center;

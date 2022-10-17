@@ -1,7 +1,7 @@
 import { ScrollView, TouchableOpacity } from 'react-native'
 import CirclesItem from '../components/CirclesItem'
 import { useCircles } from '../contexts/circles'
-import { Header } from '../styles/Global'
+import { Container, Header } from '../styles/Global'
 import { Text, Layout } from '@ui-kitten/components'
 
 import { Feather } from '@expo/vector-icons'
@@ -13,7 +13,7 @@ export default function Points() {
   const navigation = useNavigation()
 
   return (
-    <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <Container>
       <ScrollView
         style={{
           flex: 1,
@@ -25,17 +25,21 @@ export default function Points() {
       >
         <Header>
           <TouchableOpacity onPress={() => navigation.navigate('Map' as never)}>
-            <Feather name="arrow-left" size={28} color="black" />
+            <Feather name="arrow-left" size={28} color="white" />
           </TouchableOpacity>
-          <Text category="h1">Pontos</Text>
+          <Text category="h1" style={{ color: 'white' }}>
+            Pontos
+          </Text>
         </Header>
         {circles.length === 0 && (
-          <Text category="h6">Não existem pontos cadastros!</Text>
+          <Text category="h6" style={{ color: 'white' }}>
+            Não existem pontos cadastros!
+          </Text>
         )}
         {circles.map(circle => (
           <CirclesItem key={circle.id} circle={circle} />
         ))}
       </ScrollView>
-    </Layout>
+    </Container>
   )
 }

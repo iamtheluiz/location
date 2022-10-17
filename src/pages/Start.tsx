@@ -15,7 +15,14 @@ export default function Start() {
   }, [])
 
   return (
-    <Layout style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <Layout
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#242f3e',
+      }}
+    >
       <LottieView
         autoPlay
         ref={animation}
@@ -25,7 +32,9 @@ export default function Start() {
         }}
         source={locationAnimation}
       />
-      <Text category="h1">Boas Vindas</Text>
+      <Text category="h1" style={{ color: 'white' }}>
+        Boas Vindas
+      </Text>
       <TouchableOpacity
         style={{
           paddingVertical: 8,
@@ -36,7 +45,9 @@ export default function Start() {
         }}
         onPress={() => navigation.navigate('Map' as never)}
       >
-        <Text category="h5">Abrir Mapa</Text>
+        <Text category="h5" style={{ color: 'white' }}>
+          Abrir Mapa
+        </Text>
       </TouchableOpacity>
     </Layout>
   )

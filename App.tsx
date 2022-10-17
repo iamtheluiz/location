@@ -19,6 +19,7 @@ import Map from './src/pages/Map'
 import Points from './src/pages/Points'
 import CreatePoint from './src/pages/CreatePoint'
 import { Platform } from 'react-native'
+import { Container } from './src/styles/Global'
 
 const Stack = createNativeStackNavigator()
 
@@ -71,18 +72,20 @@ function App() {
     <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
       <StatusBar style="light" />
       <CirclesProvider>
-        <NavigationContainer>
-          <Stack.Navigator
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <Stack.Screen name="Home" component={Start} />
-            <Stack.Screen name="Map" component={Map} />
-            <Stack.Screen name="Points" component={Points} />
-            <Stack.Screen name="CreatePoint" component={CreatePoint} />
-          </Stack.Navigator>
-        </NavigationContainer>
+        <Container>
+          <NavigationContainer>
+            <Stack.Navigator
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              <Stack.Screen name="Home" component={Start} />
+              <Stack.Screen name="Map" component={Map} />
+              <Stack.Screen name="Points" component={Points} />
+              <Stack.Screen name="CreatePoint" component={CreatePoint} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </Container>
       </CirclesProvider>
     </ApplicationProvider>
   )
