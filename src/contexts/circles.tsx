@@ -1,9 +1,10 @@
 import uuid from 'react-native-uuid'
-import { createContext, FC, useContext, useState } from 'react'
+import { createContext, FC, useContext, useEffect, useState } from 'react'
 import { LatLng } from 'react-native-maps'
 import * as Notifications from 'expo-notifications'
 import * as Location from 'expo-location'
 import * as TaskManager from 'expo-task-manager'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AndroidNotificationPriority } from 'expo-notifications'
 import { getDistanceFromLatLonInKm } from '../utils/getDistanceFromLatLonInKm'
 
@@ -16,9 +17,10 @@ export type NotificationArea = {
 }
 
 interface CirclesContextProps {
-  circles: NotificationArea[]
+  circles: NotificationArea[] | null
   setCircles: (circles: NotificationArea[]) => void
   addNewCircle: (circleData: Omit<NotificationArea, 'id'>) => void
+  removeCircle: (id: string) => void
   currentLocation: {
     latitude: number
     longitude: number
@@ -50,7 +52,7 @@ async function schedulePushNotification(
 }
 
 export const CirclesProvider: FC = ({ children }) => {
-  const [circles, setCircles] = useState<NotificationArea[]>([])
+  const [circles, setCircles] = useState<NotificationArea[] | null>(null)
   const [currentLocation, setCurrentLocation] = useState<{
     latitude: number
     longitude: number
@@ -58,13 +60,57 @@ export const CirclesProvider: FC = ({ children }) => {
   const [isGettingCurrentLocation, setIsGettingCurrentLocation] =
     useState(false)
 
+  async function storeCircles() {
+    console.log('storeCircles() =>')
+    console.log(' |-> ' + circles!.length)
+    await AsyncStorage.setItem('@location/circles', JSON.stringify(circles))
+  }
+
+  async function getCirclesFromStorage() {
+    try {
+      const storedCircles = await AsyncStorage.getItem('@location/circles')
+      console.log('getCirclesFromStorage() =>')
+      console.log(' |-> ' + storedCircles)
+
+      if (storedCircles) {
+        setCircles(JSON.parse(storedCircles))
+      }
+    } catch (error) {
+      setCircles([])
+    }
+  }
+
+  function removeLocationTracker() {
+    Location.stopLocationUpdatesAsync(TASK_FETCH_LOCATION)
+  }
+
+  useEffect(() => {
+    getCirclesFromStorage()
+
+    return removeLocationTracker
+  }, [])
+
+  useEffect(() => {
+    if (circles) {
+      storeCircles()
+    }
+  }, [circles])
+
   function addNewCircle(circleData: Omit<NotificationArea, 'id'>) {
     const circle = {
       id: String(uuid.v4()),
       ...circleData,
     }
 
-    setCircles([...circles, circle])
+    setCircles([...circles!, circle])
+  }
+
+  function removeCircle(id: string) {
+    if (!circles) return
+
+    const filteredCircles = circles?.filter(circle => circle.id !== id)
+
+    setCircles(filteredCircles)
   }
 
   TaskManager.defineTask(
@@ -79,6 +125,7 @@ export const CirclesProvider: FC = ({ children }) => {
         coords: { latitude, longitude },
       } = location
 
+      console.log(latitude, longitude)
       setCurrentLocation({ latitude, longitude })
       checkIfLocationIsInsideACircle(latitude, longitude)
     }
@@ -88,6 +135,8 @@ export const CirclesProvider: FC = ({ children }) => {
     currentLatitude: number,
     currentLongitude: number
   ) {
+    if (!circles) return
+
     circles.map(circle => {
       const { radius } = circle
       const { latitude, longitude } = circle.latlng
@@ -124,7 +173,9 @@ export const CirclesProvider: FC = ({ children }) => {
             }.\n\nFaltam ${20} kms para seu destino!`
           )
           setCircles(oldState => {
-            const filteredState = oldState.filter(item => item.id !== circle.id)
+            const filteredState = oldState!.filter(
+              item => item.id !== circle.id
+            )
             const newCircle = {
               ...circle,
               lastNotified: new Date(),
@@ -137,9 +188,9 @@ export const CirclesProvider: FC = ({ children }) => {
   }
 
   async function handleToggleLocation() {
-    setIsGettingCurrentLocation(!isGettingCurrentLocation)
+    const toggledIsGettingCurrentLocation = !isGettingCurrentLocation
 
-    if (isGettingCurrentLocation) {
+    if (toggledIsGettingCurrentLocation) {
       // 2 start the task
       await Location.startLocationUpdatesAsync(TASK_FETCH_LOCATION, {
         accuracy: Location.Accuracy.Highest,
@@ -154,6 +205,8 @@ export const CirclesProvider: FC = ({ children }) => {
     } else {
       await Location.stopLocationUpdatesAsync(TASK_FETCH_LOCATION)
     }
+
+    setIsGettingCurrentLocation(toggledIsGettingCurrentLocation)
   }
 
   return (
@@ -162,6 +215,7 @@ export const CirclesProvider: FC = ({ children }) => {
         circles,
         setCircles,
         addNewCircle,
+        removeCircle,
         currentLocation,
         isGettingCurrentLocation,
         handleToggleLocation,

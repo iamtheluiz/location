@@ -1,9 +1,12 @@
 import styled from 'styled-components/native'
 import MapView, { Circle } from 'react-native-maps'
+import { Alert } from 'react-native'
 import { NotificationArea, useCircles } from '../contexts/circles'
 import { getDistanceFromLatLonInKm } from '../utils/getDistanceFromLatLonInKm'
 import { useEffect, useState } from 'react'
+import { Feather } from '@expo/vector-icons'
 import { MapStyle } from '../styles/MapStyle'
+import { Button } from '@ui-kitten/components'
 
 const CirclesItemContainer = styled.View`
   flex-direction: column;
@@ -23,6 +26,7 @@ const CirclesItemMap = styled.View`
 `
 const CirclesItemInfo = styled.View`
   flex-direction: row;
+  align-items: center;
   padding: 6px 12px;
   flex: 1;
   background-color: white;
@@ -50,8 +54,10 @@ const CirclesItemDistance = styled.Text`
 export default function CirclesItem({ circle }: { circle: NotificationArea }) {
   const { currentLocation } = useCircles()
   const [distanceText, setDistanceText] = useState('0km')
+  const { isGettingCurrentLocation, removeCircle } = useCircles()
 
   useEffect(() => {
+    console.log(currentLocation)
     let distanceValue = getDistanceFromLatLonInKm(
       circle.latlng.latitude,
       circle.latlng.longitude,
@@ -72,6 +78,22 @@ export default function CirclesItem({ circle }: { circle: NotificationArea }) {
 
     setDistanceText(`${distanceValue}${unit}`)
   }, [currentLocation])
+
+  function handleDeleteCircle() {
+    Alert.alert(
+      'Remover ponto',
+      `Você tem certeza que deseja excluir o ponto ${circle.name}?`,
+      [
+        {
+          text: 'Cancelar',
+        },
+        {
+          text: 'Confirmar',
+          onPress: () => removeCircle(circle.id),
+        },
+      ]
+    )
+  }
 
   return (
     <CirclesItemContainer>
@@ -108,10 +130,18 @@ export default function CirclesItem({ circle }: { circle: NotificationArea }) {
           </CirclesItemPosition>
           <CirclesItemRadius>{circle.radius} metros de raio</CirclesItemRadius>
         </CirclesItemDetails>
-        <CirclesItemDistanceContainer>
-          <CirclesItemDistanceLabel>Distância</CirclesItemDistanceLabel>
-          <CirclesItemDistance>{distanceText}</CirclesItemDistance>
-        </CirclesItemDistanceContainer>
+        {isGettingCurrentLocation && (
+          <CirclesItemDistanceContainer>
+            <CirclesItemDistanceLabel>Distância</CirclesItemDistanceLabel>
+            <CirclesItemDistance>{distanceText}</CirclesItemDistance>
+          </CirclesItemDistanceContainer>
+        )}
+        <Button
+          style={{ width: 38, height: 38, marginLeft: 4 }}
+          status="danger"
+          onPress={handleDeleteCircle}
+          accessoryLeft={<Feather name="trash" size={18} color="white" />}
+        />
       </CirclesItemInfo>
     </CirclesItemContainer>
   )

@@ -61,6 +61,7 @@ export default function CreatePoint({ route }: any) {
         name,
         radius,
         latlng: location,
+        lastNotified: null,
       })
 
       navigation.navigate('Points' as never)

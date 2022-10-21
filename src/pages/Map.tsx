@@ -39,7 +39,7 @@ export default function Map() {
   }, [])
 
   function handleRemoveCircle(circle: NotificationArea) {
-    setCircles(circles.filter(item => item.id === circle.id))
+    setCircles(circles!.filter(item => item.id === circle.id))
   }
 
   function checkIfLocationIsInsideCircle() {}
@@ -78,7 +78,7 @@ export default function Map() {
           )
         }
       >
-        {circles.map(circle => (
+        {circles!.map(circle => (
           <Circle
             key={circle.id}
             center={circle.latlng}
@@ -92,7 +92,7 @@ export default function Map() {
       </MapView>
       <OverView>
         <FloatButton onPress={handleToggleLocation}>
-          {isGettingCurrentLocation ? (
+          {!isGettingCurrentLocation ? (
             <MaterialIcons name="gps-off" size={28} color="white" />
           ) : (
             <MaterialIcons name="gps-fixed" size={28} color="white" />

@@ -2,7 +2,7 @@ import { ScrollView, TouchableOpacity } from 'react-native'
 import CirclesItem from '../components/CirclesItem'
 import { useCircles } from '../contexts/circles'
 import { Container, Header } from '../styles/Global'
-import { Text, Layout } from '@ui-kitten/components'
+import { Text } from '@ui-kitten/components'
 
 import { Feather } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
@@ -31,12 +31,13 @@ export default function Points() {
             Pontos
           </Text>
         </Header>
-        {circles.length === 0 && (
+        {!circles && <></>}
+        {circles!.length === 0 && (
           <Text category="h6" style={{ color: 'white' }}>
             Não existem pontos cadastros!
           </Text>
         )}
-        {circles.map(circle => (
+        {circles!.map(circle => (
           <CirclesItem key={circle.id} circle={circle} />
         ))}
       </ScrollView>

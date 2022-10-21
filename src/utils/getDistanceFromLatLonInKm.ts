@@ -4,6 +4,10 @@ export function getDistanceFromLatLonInKm(
   lat2: number,
   lon2: number
 ) {
+  console.log(lat1)
+  console.log(lon1)
+  console.log(lat2)
+  console.log(lon2)
   const R = 6371 // Radius of the earth in km
   const dLat = deg2rad(lat2 - lat1) // deg2rad below
   const dLon = deg2rad(lon2 - lon1)
