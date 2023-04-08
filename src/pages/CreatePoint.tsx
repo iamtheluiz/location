@@ -5,13 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import { Alert, TouchableOpacity, View } from 'react-native'
 import MapView, { Circle, LatLng } from 'react-native-maps'
 
-import {
-  ButtonText,
-  Container,
-  Header,
-  InputGroup,
-  Title,
-} from '../styles/Global'
+import { Container, Header, InputGroup } from '../styles/Global'
 import { useCircles } from '../contexts/circles'
 import { Text, Input, Button } from '@ui-kitten/components'
 

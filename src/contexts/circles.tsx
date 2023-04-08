@@ -1,5 +1,12 @@
 import uuid from 'react-native-uuid'
-import { createContext, FC, useContext, useEffect, useState } from 'react'
+import {
+  createContext,
+  FC,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react'
 import { LatLng } from 'react-native-maps'
 import * as Notifications from 'expo-notifications'
 import * as Location from 'expo-location'
@@ -14,6 +21,10 @@ export type NotificationArea = {
   radius: number
   latlng: LatLng
   lastNotified: null | Date
+}
+
+interface CirclesProps {
+  children: ReactNode
 }
 
 interface CirclesContextProps {
@@ -51,7 +62,7 @@ async function schedulePushNotification(
   })
 }
 
-export const CirclesProvider: FC = ({ children }) => {
+export const CirclesProvider: FC<CirclesProps> = ({ children }) => {
   const [circles, setCircles] = useState<NotificationArea[] | null>(null)
   const [currentLocation, setCurrentLocation] = useState<{
     latitude: number
@@ -154,8 +165,10 @@ export const CirclesProvider: FC = ({ children }) => {
       console.log(distance)
       console.log(radius)
       if (circle.lastNotified) {
+        console.log(circle.lastNotified)
         console.log(
-          new Date().getTime() / 1000 - circle.lastNotified.getTime() / 1000
+          new Date().getTime() / 1000 -
+            new Date(circle.lastNotified).getTime() / 1000
         )
       }
 
@@ -163,7 +176,8 @@ export const CirclesProvider: FC = ({ children }) => {
         // Dentro da área
         if (
           !circle.lastNotified ||
-          new Date().getTime() / 1000 - circle.lastNotified.getTime() / 1000 >
+          new Date().getTime() / 1000 -
+            new Date(circle.lastNotified).getTime() / 1000 >
             60
         ) {
           schedulePushNotification(

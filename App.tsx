@@ -12,14 +12,13 @@ import { ApplicationProvider } from '@ui-kitten/components'
 
 import { default as theme } from './src/styles/theme.json'
 
-import { CirclesProvider } from './src/contexts/circles'
-
 import Start from './src/pages/Start'
 import Map from './src/pages/Map'
 import Points from './src/pages/Points'
 import CreatePoint from './src/pages/CreatePoint'
 import { Platform } from 'react-native'
 import { Container } from './src/styles/Global'
+import { ApplicationContextProvider } from './src/contexts'
 
 const Stack = createNativeStackNavigator()
 
@@ -71,7 +70,7 @@ function App() {
   return (
     <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
       <StatusBar style="light" />
-      <CirclesProvider>
+      <ApplicationContextProvider>
         <Container>
           <NavigationContainer>
             <Stack.Navigator
@@ -86,7 +85,7 @@ function App() {
             </Stack.Navigator>
           </NavigationContainer>
         </Container>
-      </CirclesProvider>
+      </ApplicationContextProvider>
     </ApplicationProvider>
   )
 }

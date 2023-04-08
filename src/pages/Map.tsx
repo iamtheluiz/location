@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react'
 import MapView, { Circle } from 'react-native-maps'
 import * as Location from 'expo-location'
-import { Text } from 'react-native'
 
 import { Feather, MaterialIcons } from '@expo/vector-icons'
 import { Container, FloatButton, OverView } from '../styles/Global'
 import { NotificationArea, useCircles } from '../contexts/circles'
 import { useNavigation } from '@react-navigation/core'
 import { MapStyle } from '../styles/MapStyle'
+import { usePermissions } from '../contexts/permissions'
+import DeniedLocationPermission from '../components/DeniedLocationPermission'
+import { Spinner } from '@ui-kitten/components'
 
 export default function Map() {
-  const [granted, setGranted] = useState(false)
   const [location, setLocation] = useState<Location.LocationObject>()
 
+  const { locationGranted } = usePermissions()
   const {
     circles,
     setCircles,
@@ -22,21 +24,16 @@ export default function Map() {
   const navigation = useNavigation()
 
   useEffect(() => {
-    // Request location permission
-    async function getLocationPermission() {
-      const { status } = await Location.requestForegroundPermissionsAsync()
+    // Check for location permission
+    if (locationGranted) {
+      // eslint-disable-next-line prettier/prettier
+      (async function getCurrentLocation() {
+        const location = await Location.getCurrentPositionAsync()
 
-      if (status !== 'granted') {
-        return
-      }
-
-      setGranted(true)
-      const location = await Location.getCurrentPositionAsync()
-      setLocation(location)
+        setLocation(location)
+      })()
     }
-
-    getLocationPermission()
-  }, [])
+  }, [locationGranted])
 
   function handleRemoveCircle(circle: NotificationArea) {
     setCircles(circles!.filter(item => item.id === circle.id))
@@ -44,10 +41,18 @@ export default function Map() {
 
   function checkIfLocationIsInsideCircle() {}
 
-  if (granted === false || !location) {
+  if (locationGranted === null || !location) {
     return (
-      <Container center={false}>
-        <Text>Location permission needed!</Text>
+      <Container center>
+        <Spinner size="giant" />
+      </Container>
+    )
+  }
+
+  if (locationGranted === false) {
+    return (
+      <Container center>
+        <DeniedLocationPermission />
       </Container>
     )
   }
@@ -86,7 +91,6 @@ export default function Map() {
             strokeWidth={1}
             strokeColor={'#1a66ff'}
             fillColor={'rgba(230,238,255,0.5)'}
-            onPress={() => handleRemoveCircle(circle)}
           />
         ))}
       </MapView>
