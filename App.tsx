@@ -68,7 +68,7 @@ function App() {
   }, [])
 
   return (
-    <ApplicationProvider {...eva} theme={{ ...eva.light, ...theme }}>
+    <ApplicationProvider {...eva} theme={{ ...eva.dark, ...theme }}>
       <StatusBar style="light" />
       <ApplicationContextProvider>
         <Container>

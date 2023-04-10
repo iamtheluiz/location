@@ -6,7 +6,7 @@ import { getDistanceFromLatLonInKm } from '../utils/getDistanceFromLatLonInKm'
 import { useEffect, useState } from 'react'
 import { Feather } from '@expo/vector-icons'
 import { MapStyle } from '../styles/MapStyle'
-import { Button } from '@ui-kitten/components'
+import { Button, ListItem } from '@ui-kitten/components'
 
 const CirclesItemContainer = styled.View`
   flex-direction: column;
@@ -51,13 +51,20 @@ const CirclesItemDistance = styled.Text`
   font-weight: bold;
 `
 
-export default function CirclesItem({ circle }: { circle: NotificationArea }) {
+export type CirclesItemDisplayType = 'list' | 'grid' | 'map'
+
+export default function CirclesItem({
+  circle,
+  displayType,
+}: {
+  circle: NotificationArea
+  displayType: CirclesItemDisplayType
+}) {
   const { currentLocation } = useCircles()
   const [distanceText, setDistanceText] = useState('0km')
   const { isGettingCurrentLocation, removeCircle } = useCircles()
 
   useEffect(() => {
-    console.log(currentLocation)
     let distanceValue = getDistanceFromLatLonInKm(
       circle.latlng.latitude,
       circle.latlng.longitude,
@@ -95,6 +102,76 @@ export default function CirclesItem({ circle }: { circle: NotificationArea }) {
     )
   }
 
+  if (displayType === 'list')
+    return (
+      <ListDisplay
+        circle={circle}
+        isGettingCurrentLocation={isGettingCurrentLocation}
+        distanceText={distanceText}
+        handleDeleteCircle={handleDeleteCircle}
+      />
+    )
+
+  if (displayType === 'grid')
+    return (
+      <MapDisplay
+        circle={circle}
+        isGettingCurrentLocation={isGettingCurrentLocation}
+        distanceText={distanceText}
+        handleDeleteCircle={handleDeleteCircle}
+      />
+    )
+
+  return (
+    <MapDisplay
+      circle={circle}
+      isGettingCurrentLocation={isGettingCurrentLocation}
+      distanceText={distanceText}
+      handleDeleteCircle={handleDeleteCircle}
+    />
+  )
+}
+
+type DisplayProps = {
+  circle: NotificationArea
+  isGettingCurrentLocation: boolean
+  distanceText: string
+  handleDeleteCircle: () => void
+}
+
+const ListDisplay = ({
+  circle,
+  isGettingCurrentLocation,
+  distanceText,
+  handleDeleteCircle,
+}: DisplayProps) => {
+  return (
+    <ListItem
+      title={circle.name}
+      description={
+        isGettingCurrentLocation
+          ? distanceText
+          : `${circle.radius} metros de raio`
+      }
+      accessoryRight={
+        <Button
+          style={{ width: 38, height: 38, marginLeft: 4 }}
+          status="danger"
+          onPress={handleDeleteCircle}
+          accessoryLeft={<Feather name="trash" size={18} color="white" />}
+        />
+      }
+      style={{ backgroundColor: 'transparent' }}
+    />
+  )
+}
+
+const MapDisplay = ({
+  circle,
+  isGettingCurrentLocation,
+  distanceText,
+  handleDeleteCircle,
+}: DisplayProps) => {
   return (
     <CirclesItemContainer>
       <CirclesItemMap>
@@ -110,6 +187,10 @@ export default function CirclesItem({ circle }: { circle: NotificationArea }) {
             height: '100%',
           }}
           customMapStyle={MapStyle}
+          pitchEnabled={false}
+          rotateEnabled={false}
+          scrollEnabled={false}
+          zoomEnabled={false}
         >
           <Circle
             key={circle.id}
